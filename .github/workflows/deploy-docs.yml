@@ -1,0 +1,57 @@
+# Builds the Docusaurus site in refract-docs/ and publishes it to GitHub Pages.
+# One-time setup in your fork: Settings → Pages → Build and deployment →
+# Source: "GitHub Actions". The site is then live at
+# https://<your-username>.github.io/<repo-name>/
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['refract-docs/**', '.github/workflows/deploy-docs.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: refract-docs
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so "Last updated" dates are correct
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: refract-docs/package-lock.json
+      - run: npm ci
+      - name: Build site
+        run: npm run build
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+          BASE_URL: /${{ github.event.repository.name }}/
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          ASSISTANT_ENDPOINT: ${{ vars.ASSISTANT_ENDPOINT }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: refract-docs/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

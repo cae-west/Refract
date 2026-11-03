@@ -1,0 +1,246 @@
+/*
+ * Refract docs theme.
+ * A cool, optical palette: navy ink on glass-white, one indigo accent, and a
+ * five-colour spectrum used sparingly (logo, hero beam, assistant edge).
+ */
+
+:root {
+  --rf-ink: #1a2238;
+  --rf-ink-solid: #1a2238;
+  --rf-on-ink: #f6f8fb;
+  --rf-glass: #f6f8fb;
+  --rf-surface: #ffffff;
+  --rf-tint: #eef0f8;
+  --rf-line: #dfe3ee;
+  --rf-muted: #5b6479;
+  --rf-red: #e5484d;
+  --rf-amber: #f2a541;
+  --rf-green: #2fb67c;
+  --rf-blue: #2e8be6;
+  --rf-violet: #7a5af0;
+  --rf-spectrum: linear-gradient(90deg, var(--rf-red), var(--rf-amber), var(--rf-green), var(--rf-blue), var(--rf-violet));
+
+  --ifm-color-primary: #4c46d6;
+  --ifm-color-primary-dark: #3e37cf;
+  --ifm-color-primary-darker: #3a33c3;
+  --ifm-color-primary-darkest: #302aa0;
+  --ifm-color-primary-light: #6560dc;
+  --ifm-color-primary-lighter: #726ddf;
+  --ifm-color-primary-lightest: #9894e8;
+
+  --ifm-background-color: var(--rf-glass);
+  --ifm-background-surface-color: var(--rf-surface);
+  --ifm-font-color-base: var(--rf-ink);
+  --ifm-heading-color: var(--rf-ink);
+  --ifm-toc-border-color: var(--rf-line);
+  --ifm-hr-border-color: var(--rf-line);
+
+  --ifm-font-family-base: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ifm-heading-font-family: 'Bricolage Grotesque', 'Instrument Sans', system-ui, sans-serif;
+  --ifm-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ifm-font-size-base: 16.5px;
+  --ifm-line-height-base: 1.68;
+  --ifm-heading-font-weight: 650;
+  --ifm-h1-font-size: 2.45rem;
+  --ifm-h2-font-size: 1.62rem;
+  --ifm-h3-font-size: 1.22rem;
+
+  --ifm-code-font-size: 88%;
+  --ifm-code-border-radius: 5px;
+  --ifm-code-background: #e9ebf8;
+  --docusaurus-highlighted-code-line-bg: rgba(76, 70, 214, 0.1);
+
+  --ifm-navbar-height: 64px;
+  --ifm-navbar-background-color: rgba(246, 248, 251, 0.88);
+  --ifm-navbar-shadow: none;
+  --ifm-footer-background-color: var(--rf-tint);
+  --ifm-menu-color: #3a4259;
+  --ifm-menu-color-background-active: rgba(76, 70, 214, 0.09);
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-border-color: var(--rf-line);
+  --ifm-global-radius: 8px;
+}
+
+[data-theme='dark'] {
+  --rf-ink: #e4e7f0;
+  --rf-ink-solid: #232a42;
+  --rf-on-ink: #f6f8fb;
+  --rf-glass: #10141f;
+  --rf-surface: #171c2a;
+  --rf-tint: #1b2133;
+  --rf-line: #2a3149;
+  --rf-muted: #9aa3ba;
+
+  --ifm-color-primary: #8e89ff;
+  --ifm-color-primary-dark: #736dff;
+  --ifm-color-primary-darker: #6660ff;
+  --ifm-color-primary-darkest: #3d35ff;
+  --ifm-color-primary-light: #a9a5ff;
+  --ifm-color-primary-lighter: #b6b3ff;
+  --ifm-color-primary-lightest: #dedcff;
+
+  --ifm-code-background: #1f2539;
+  --docusaurus-highlighted-code-line-bg: rgba(142, 137, 255, 0.14);
+  --ifm-navbar-background-color: rgba(16, 20, 31, 0.86);
+  --ifm-menu-color: #b6bdd0;
+  --ifm-menu-color-background-active: rgba(142, 137, 255, 0.12);
+}
+
+body {
+  background: var(--ifm-background-color);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--ifm-heading-font-family);
+  letter-spacing: -0.015em;
+}
+h1 { font-weight: 750; letter-spacing: -0.025em; }
+
+/* Navbar */
+.navbar {
+  backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 1px solid var(--rf-line);
+}
+.navbar__title {
+  font-family: var(--ifm-heading-font-family);
+  font-weight: 750;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+.navbar__logo { height: 28px; }
+.navbar__link { font-weight: 500; }
+.navbar-version {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border: 1px solid var(--rf-line);
+  border-radius: 999px;
+  color: var(--rf-muted);
+  margin-right: 6px;
+}
+
+.header-github-link::before {
+  content: '';
+  display: flex;
+  width: 22px;
+  height: 22px;
+  background-color: var(--ifm-navbar-link-color);
+  -webkit-mask: url('../../static/img/github.svg') no-repeat center / contain;
+  mask: url('../../static/img/github.svg') no-repeat center / contain;
+}
+.header-github-link:hover::before { background-color: var(--ifm-color-primary); }
+
+/* Announcement bar */
+div[class*='announcementBar'] {
+  background: var(--rf-ink-solid);
+  color: var(--rf-on-ink);
+  font-size: 0.85rem;
+  border-bottom: 0;
+}
+div[class*='announcementBar'] a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+div[class*='announcementBar'] button { color: var(--rf-on-ink); }
+
+/* Sidebar */
+.menu { font-size: 0.93rem; }
+.menu__link { border-radius: 6px; }
+.menu__link--active:not(.menu__link--sublist) {
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--ifm-color-primary);
+  border-radius: 0 6px 6px 0;
+}
+.theme-doc-sidebar-item-category-level-1 > .menu__list-item-collapsible > .menu__link {
+  font-weight: 600;
+  color: var(--ifm-font-color-base);
+}
+
+/* Article */
+.theme-doc-markdown { max-width: 76ch; }
+.theme-doc-markdown h1 { margin-bottom: 1.1rem; }
+.theme-doc-markdown h2 {
+  margin-top: 2.6rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rf-line);
+}
+.theme-doc-markdown h3 { margin-top: 1.8rem; }
+.theme-doc-markdown h1 code,
+.theme-doc-markdown h2 code,
+.theme-doc-markdown h3 code {
+  font-size: 0.86em;
+  background: transparent;
+  padding: 0;
+}
+.theme-doc-markdown a:not(.hash-link) {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ifm-color-primary) 35%, transparent);
+  text-underline-offset: 3px;
+}
+.theme-doc-markdown a:not(.hash-link):hover { text-decoration-color: var(--ifm-color-primary); }
+
+code { border: 0; }
+
+/* Tables: quiet, ruled, no zebra */
+.theme-doc-markdown table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.theme-doc-markdown thead tr { border-bottom: 2px solid var(--rf-line); }
+.theme-doc-markdown th { background: transparent; text-align: left; font-weight: 600; }
+.theme-doc-markdown th,
+.theme-doc-markdown td {
+  border: 0;
+  border-bottom: 1px solid var(--rf-line);
+  padding: 0.55rem 0.9rem 0.55rem 0;
+  vertical-align: top;
+}
+.theme-doc-markdown tr { background: transparent !important; border: 0; }
+@media (max-width: 760px) {
+  .theme-doc-markdown table { display: block; overflow-x: auto; }
+}
+
+/* Code blocks */
+.theme-code-block { border: 1px solid var(--rf-line); box-shadow: none; }
+div[class*='codeBlockTitle'] {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--rf-muted);
+}
+
+/* Admonitions: a left rule instead of a filled box */
+.theme-admonition {
+  border: 0;
+  border-left: 3px solid var(--ifm-alert-border-color);
+  border-radius: 0 8px 8px 0;
+  box-shadow: none;
+}
+
+/* Introduction page map */
+.doc-map ul { list-style: none; padding: 0; }
+.doc-map li {
+  padding: 0.6rem 0 0.6rem 1rem;
+  border-left: 2px solid var(--rf-line);
+  margin: 0;
+}
+.doc-map li:hover { border-left-color: var(--ifm-color-primary); }
+
+/* Footer */
+.footer { border-top: 1px solid var(--rf-line); }
+.footer__title { font-family: var(--ifm-heading-font-family); font-weight: 650; }
+.footer__copyright { font-size: 0.85rem; color: var(--rf-muted); }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible { outline: 2px solid var(--ifm-color-primary); outline-offset: 2px; }

@@ -1,0 +1,174 @@
+---
+title: Installation
+description: Create a new Refract app or add Refract to an existing project.
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installation
+
+There are two ways to start with Refract:
+
+- **Create a new app** with the `create-refract` scaffolding tool. This is the recommended path: it sets up the compiler, the dev server and TypeScript for you.
+- **Add Refract to an existing project** that already uses a bundler such as Vite.
+
+## Requirements
+
+| Requirement | Version |
+| --- | --- |
+| Node.js | 18.18 or later (20 LTS recommended) |
+| Package manager | npm 9+, pnpm 8+, or Yarn 1.22+ |
+| Browser support | Last two versions of Chrome, Edge, Firefox and Safari |
+
+Check your Node.js version:
+
+```bash
+node --version
+```
+
+## Create a new app
+
+Run the scaffolding tool and follow the prompts:
+
+<Tabs groupId="pkg">
+  <TabItem value="npm" label="npm" default>
+
+```bash
+npm create refract@latest my-app
+```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm create refract my-app
+```
+
+  </TabItem>
+  <TabItem value="yarn" label="Yarn">
+
+```bash
+yarn create refract my-app
+```
+
+  </TabItem>
+</Tabs>
+
+The tool asks two questions:
+
+1. **Language**: JavaScript or TypeScript.
+2. **Template**: `minimal` (a single component) or `starter` (routing, a theme optic and an example page).
+
+Then install dependencies and start the development server:
+
+```bash
+cd my-app
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`. When you edit a component and save, the page updates in place without losing state.
+
+## Add Refract to an existing project
+
+### 1. Install the packages
+
+<Tabs groupId="pkg">
+  <TabItem value="npm" label="npm" default>
+
+```bash
+npm install refract-js
+npm install --save-dev @refract-js/vite-plugin
+```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm add refract-js
+pnpm add -D @refract-js/vite-plugin
+```
+
+  </TabItem>
+  <TabItem value="yarn" label="Yarn">
+
+```bash
+yarn add refract-js
+yarn add -D @refract-js/vite-plugin
+```
+
+  </TabItem>
+</Tabs>
+
+:::info[Package name versus import name]
+The package is published to npm as `refract-js`, but you always import from `"refract"`. The Vite plugin registers that alias and runs the Refract compiler over your JSX.
+:::
+
+### 2. Register the Vite plugin
+
+```js title="vite.config.js"
+import { defineConfig } from "vite";
+import refract from "@refract-js/vite-plugin";
+
+export default defineConfig({
+  plugins: [refract()],
+});
+```
+
+### 3. Add a mount point and an entry file
+
+```html title="index.html"
+<body>
+  <div id="root"></div>
+  <script type="module" src="/main.js"></script>
+</body>
+```
+
+```jsx title="main.js"
+import { createApp, createComponent } from "refract";
+
+const App = createComponent(() => <h1>Hello from Refract</h1>);
+
+createApp(App).mount("#root");
+```
+
+Run your dev server. You should see **Hello from Refract** on the page.
+
+## Use Refract without a build step
+
+For prototypes or adding a little interactivity to a static page, load the browser build from a CDN. JSX is not available without a compiler, so use the `h()` function instead:
+
+```html title="index.html"
+<div id="root"></div>
+<script type="module">
+  import { createApp, createComponent, h } from "https://esm.sh/refract-js@1";
+
+  const Greeting = createComponent(({ lens }) => {
+    const name = lens.useRefraction("world");
+    return h("p", null, "Hello, ", name.value);
+  });
+
+  createApp(Greeting).mount("#root");
+</script>
+```
+
+:::caution
+The CDN build skips compiler optimizations. Use it for experiments, not production.
+:::
+
+## Verify your installation
+
+Run the Refract CLI's environment check:
+
+```bash
+npx refract doctor
+```
+
+It confirms the Node.js version, the installed `refract-js` version, and whether the compiler is registered with your bundler.
+
+## Next steps
+
+- Build your first interactive component in the [Quick start](./quick-start.mdx).
+- See what each generated file does in [Project structure](./project-structure.md).
+- Using TypeScript? Read [TypeScript support](./typescript.md).

@@ -1,0 +1,165 @@
+---
+title: Build a counter app
+description: A beginner tutorial covering components, local state, events and derived values.
+---
+
+# Build a counter app
+
+In this tutorial you build a counter with increment, decrement and reset buttons, a configurable step and a message that changes as the count grows.
+
+**What you'll learn:** creating components, local refractions, handling events, deriving values, splitting components.
+**Time:** about 15 minutes.
+**Prerequisites:** a new app created with `npm create refract@latest counter -- --template minimal`.
+
+## 1. Show a count
+
+```jsx title="src/App.jsx"
+import { createComponent } from "refract";
+
+export const App = createComponent(({ lens }) => {
+  const count = lens.useRefraction(0);
+
+  return (
+    <main class="counter">
+      <output aria-live="polite">{count.value}</output>
+    </main>
+  );
+});
+```
+
+Run `npm run dev`. You should see **0**.
+
+`<output aria-live="polite">` makes screen readers announce the number when it changes.
+
+## 2. Add buttons
+
+```jsx title="src/App.jsx" {7-11}
+export const App = createComponent(({ lens }) => {
+  const count = lens.useRefraction(0);
+
+  return (
+    <main class="counter">
+      <output aria-live="polite">{count.value}</output>
+      <div class="counter__controls">
+        <button onClick={() => count.update((n) => n - 1)}>Decrease</button>
+        <button onClick={() => count.set(0)}>Reset</button>
+        <button onClick={() => count.update((n) => n + 1)}>Increase</button>
+      </div>
+    </main>
+  );
+});
+```
+
+Click the buttons. Only the `<output>` text changes; Refract doesn't touch the buttons.
+
+## 3. Make the step configurable
+
+Add a second refraction for the step size and a number input to change it:
+
+```jsx
+const step = lens.useRefraction(1);
+
+<label>
+  Step
+  <input
+    type="number"
+    min="1"
+    value={step.value}
+    onInput={(e) => step.set(Number(e.target.value) || 1)}
+  />
+</label>
+```
+
+Update the buttons to use it:
+
+```jsx
+<button onClick={() => count.update((n) => n - step.value)}>Decrease</button>
+<button onClick={() => count.update((n) => n + step.value)}>Increase</button>
+```
+
+## 4. Derive a message
+
+Show a different message depending on the count. Because the message is calculated from `count`, derive it instead of storing it:
+
+```jsx
+const message = lens.derive(() => {
+  if (count.value === 0) return "Start counting";
+  if (count.value < 0) return "Below zero";
+  if (count.value >= 100) return "Triple digits!";
+  return "Keep going";
+});
+
+<p class="counter__message">{message.value}</p>
+```
+
+## 5. Extract a reusable optic
+
+The counting logic would be useful elsewhere. Move it into an optic:
+
+```js title="src/optics/useCounter.js"
+import { useRefraction } from "refract";
+
+export function useCounter(initial = 0) {
+  const count = useRefraction(initial);
+  const step = useRefraction(1);
+
+  return {
+    count,
+    step,
+    increase: () => count.update((n) => n + step.value),
+    decrease: () => count.update((n) => n - step.value),
+    reset: () => count.set(initial),
+  };
+}
+```
+
+## 6. The finished component
+
+```jsx title="src/App.jsx"
+import { createComponent } from "refract";
+import { useCounter } from "./optics/useCounter";
+
+export const App = createComponent(({ lens }) => {
+  const { count, step, increase, decrease, reset } = useCounter(0);
+
+  const message = lens.derive(() => {
+    if (count.value === 0) return "Start counting";
+    if (count.value < 0) return "Below zero";
+    if (count.value >= 100) return "Triple digits!";
+    return "Keep going";
+  });
+
+  return (
+    <main class="counter">
+      <output aria-live="polite">{count.value}</output>
+      <p class="counter__message">{message.value}</p>
+
+      <div class="counter__controls">
+        <button onClick={decrease}>Decrease</button>
+        <button onClick={reset}>Reset</button>
+        <button onClick={increase}>Increase</button>
+      </div>
+
+      <label>
+        Step
+        <input
+          type="number"
+          min="1"
+          value={step.value}
+          onInput={(e) => step.set(Number(e.target.value) || 1)}
+        />
+      </label>
+    </main>
+  );
+});
+```
+
+## Recap
+
+- `lens.useRefraction()` holds component state; `.set()` and `.update()` change it.
+- `lens.derive()` calculates values from state without duplicating it.
+- Optics let you lift logic out of a component and reuse it.
+
+## Next steps
+
+Continue with [Build a todo list](./todo-list.md) to fetch data and handle loading states.

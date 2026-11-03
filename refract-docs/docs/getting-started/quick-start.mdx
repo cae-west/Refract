@@ -1,0 +1,168 @@
+---
+title: Quick start
+description: Build a small interactive app in about ten minutes and learn the core Refract ideas along the way.
+---
+
+# Quick start
+
+In this quick start you build a tiny "reading list" app. Along the way you will:
+
+- create components with `createComponent()`
+- hold state in refractions
+- pass data between components with props
+- derive values from state
+- run a side effect
+
+**Time:** about 10 minutes. **Before you begin:** [create a new app](./installation.mdx#create-a-new-app) with the `minimal` template.
+
+## Step 1: Render a component
+
+Replace the contents of `src/App.jsx`:
+
+```jsx title="src/App.jsx"
+import { createComponent } from "refract";
+
+export const App = createComponent(() => {
+  return (
+    <main>
+      <h1>Reading list</h1>
+    </main>
+  );
+});
+```
+
+A component is a function wrapped in `createComponent()`. It returns JSX describing the UI. `src/main.js` already mounts `App` into `#root`:
+
+```js title="src/main.js"
+import { createApp } from "refract";
+import { App } from "./App";
+
+createApp(App).mount("#root");
+```
+
+## Step 2: Add state with a refraction
+
+Every component receives a **lens**. Use `lens.useRefraction()` to create state that belongs to the component:
+
+```jsx title="src/App.jsx" {3-4,9-13}
+import { createComponent } from "refract";
+
+export const App = createComponent(({ lens }) => {
+  const books = lens.useRefraction(["The Pragmatic Programmer"]);
+
+  return (
+    <main>
+      <h1>Reading list</h1>
+      <ul>
+        {books.value.map((title) => (
+          <li key={title}>{title}</li>
+        ))}
+      </ul>
+    </main>
+  );
+});
+```
+
+Reading `books.value` inside the component subscribes it. When the value changes, Refract re-renders this component, and only this component.
+
+## Step 3: Update state from an event
+
+Add a form that appends a title:
+
+```jsx title="src/App.jsx" {5,7-12,17-20}
+import { createComponent } from "refract";
+
+export const App = createComponent(({ lens }) => {
+  const books = lens.useRefraction(["The Pragmatic Programmer"]);
+  const draft = lens.useRefraction("");
+
+  const addBook = (event) => {
+    event.preventDefault();
+    if (!draft.value.trim()) return;
+    books.set([...books.value, draft.value.trim()]);
+    draft.set("");
+  };
+
+  return (
+    <main>
+      <h1>Reading list</h1>
+      <form onSubmit={addBook}>
+        <input value={draft.value} onInput={(e) => draft.set(e.target.value)} />
+        <button type="submit">Add book</button>
+      </form>
+      <ul>
+        {books.value.map((title) => (
+          <li key={title}>{title}</li>
+        ))}
+      </ul>
+    </main>
+  );
+});
+```
+
+:::tip[Never mutate `.value` in place]
+`books.value.push(title)` changes the array without telling Refract. Always pass a new value to `.set()`, or use `.update()` with a function: `books.update((list) => [...list, title])`.
+:::
+
+## Step 4: Split it into components
+
+Move the list into its own component and pass data through **props**:
+
+```jsx title="src/BookList.jsx"
+import { createComponent } from "refract";
+
+export const BookList = createComponent(({ props }) => (
+  <ul>
+    {props.books.map((title) => (
+      <li key={title}>{title}</li>
+    ))}
+  </ul>
+));
+```
+
+```jsx title="src/App.jsx"
+import { BookList } from "./BookList";
+// ...
+<BookList books={books.value} />
+```
+
+Props arrive on `props`, the same way they would in React.
+
+## Step 5: Derive a value
+
+Show how many books are on the list. Instead of storing a second piece of state, derive it:
+
+```jsx
+const count = lens.derive(() => books.value.length);
+
+<p>{count.value} books to read</p>
+```
+
+A derived refraction recalculates only when the refractions it reads change. See [`derive()`](../api/derive.md).
+
+## Step 6: Run a side effect
+
+Save the list to `localStorage` whenever it changes:
+
+```jsx
+lens.useEffect(() => {
+  localStorage.setItem("books", JSON.stringify(books.value));
+}, [books]);
+```
+
+The effect runs after render and again whenever `books` changes. Pass refractions directly in the dependency array; Refract compares their values for you.
+
+## What you learned
+
+| Concept | What it did here |
+| --- | --- |
+| `createComponent()` | Defined `App` and `BookList` |
+| `lens.useRefraction()` | Held the list and the input draft |
+| Props | Passed the list from `App` to `BookList` |
+| `lens.derive()` | Computed the count from the list |
+| `lens.useEffect()` | Persisted the list to `localStorage` |
+
+## Next steps
+
+- Understand why this works in [Core concepts](../concepts/components.md).
+- Build a fuller app in the [Todo list tutorial](../guides/todo-list.md), which adds data fetching and loading states.

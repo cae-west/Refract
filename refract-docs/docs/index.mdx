@@ -1,0 +1,78 @@
+---
+slug: /
+title: Introduction
+description: What Refract is, the problems it solves, and how the documentation is organized.
+sidebar_label: Introduction
+---
+
+# Introduction
+
+Refract is a JavaScript framework for building user interfaces out of small, pure components and reactive state. You describe what the screen should look like for a given state, and Refract updates exactly the parts of the page that depend on the state that changed.
+
+```jsx title="Counter.jsx"
+import { createComponent } from "refract";
+
+export const Counter = createComponent(({ lens }) => {
+  const count = lens.useRefraction(0);
+
+  return (
+    <button onClick={() => count.set(count.value + 1)}>
+      Clicked {count.value} times
+    </button>
+  );
+});
+```
+
+That component uses the three ideas you will meet on almost every page of these docs:
+
+- **Components** are pure functions, created with `createComponent()`, that return JSX.
+- **Refractions** are reactive units of state. Reading `count.value` subscribes the component; calling `count.set()` updates it.
+- **Lenses** are the scoped toolkit each component receives. `lens.useRefraction()` creates state that belongs to this component and is cleaned up with it.
+
+## Why Refract
+
+Front-end frameworks tend to make you choose between a simple mental model and fine-grained performance. Refract aims for both:
+
+| You want to… | Refract gives you… |
+| --- | --- |
+| Reason about UI as a function of state | Pure components with no hidden instance state |
+| Update only what changed | Refractions that track exactly which components read them |
+| Reuse logic between components | Optics: composable functions with dependency-aware caching |
+| Keep side effects predictable | Opt-in, scoped effect hooks (`useEffect`, `useOptic`, `useFlash`) that are cleaned up automatically |
+| Animate without imperative code | A declarative transition API built on refractions |
+| Work with live data | Stream-based updates through `fromStream()` |
+| Ship less JavaScript | A compiler that removes unused reactivity at build time |
+
+## How Refract compares
+
+If you know React, most of Refract will feel familiar: components, JSX and hooks-style functions all carry over. The differences are in how state flows.
+
+- **No re-render of the whole component tree.** When a refraction changes, Refract re-runs only the components that read it. You do not need `memo`, `useCallback` or dependency gymnastics to avoid wasted renders.
+- **State is an object, not a tuple.** `useRefraction()` returns one object with `.value` and `.set()`, so you can pass state around without losing the setter.
+- **State can live anywhere.** Create a refraction at module level and it becomes shared global state. Create it through a lens and it is local to a component.
+
+If you know Solid.js signals or Svelte stores, refractions will feel similar. See [Migrating from React](./guides/migrating-from-react.md) for a side-by-side mapping.
+
+## How these docs are organized
+
+<div className="doc-map">
+
+- **[Getting started](./getting-started/installation.mdx)** installs Refract and walks you through your first app.
+- **[Core concepts](./concepts/components.md)** explains the model: components, refractions, lenses, optics and side effects. Read these in order the first time.
+- **[Guides](./guides/index.md)** are task-focused. Tutorials build a complete app step by step; how-to guides solve one specific problem.
+- **[API reference](./api/index.md)** lists every export, its parameters and its return value.
+- **[Resources](./resources/faq.md)** collects the FAQ, troubleshooting tips, a glossary and the contribution guide.
+
+</div>
+
+:::tip[Ask the docs]
+Use the **Ask Refract** button in the bottom-right corner to ask a question in plain language. The assistant answers from these docs and links to the pages it used.
+:::
+
+## Prerequisites
+
+You should be comfortable with modern JavaScript (modules, arrow functions, destructuring and promises) and have a basic understanding of HTML and the DOM. Familiarity with JSX helps but is not required.
+
+## Next steps
+
+Start with [Installation](./getting-started/installation.mdx), or jump straight to the [Quick start](./getting-started/quick-start.mdx) if you already have Node.js set up.

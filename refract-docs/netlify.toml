@@ -1,0 +1,7 @@
+# Netlify: set "Base directory" to refract-docs when importing the repo.
+[build]
+  command = "npm run build"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "20"
