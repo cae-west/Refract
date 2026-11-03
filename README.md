@@ -1,80 +1,92 @@
-# Refract documentation site
+# Refract
 
-The documentation site for **Refract**, a reactive, composable JavaScript framework for building user interfaces. Built with [Docusaurus 3](https://docusaurus.io) and an integrated docs chatbot, **Ask Refract**.
+**Change one value. Update only what reads it.**
 
-## What's inside
+Refract is a reactive JavaScript framework for building user interfaces from pure components and fine-grained state. You describe what the UI should look like for a given state, and Refract updates exactly the parts of the page that depend on the state that changed. Nothing else re-renders.
 
-| Area | Contents |
+📖 **Documentation:** [cae-west.github.io/Refract](https://cae-west.github.io/Refract/)
+
+```jsx
+import { createApp, createComponent } from "refract";
+
+const Counter = createComponent(({ lens }) => {
+  const count = lens.useRefraction(0);
+
+  return (
+    <button onClick={() => count.set(count.value + 1)}>
+      Clicked {count.value} times
+    </button>
+  );
+});
+
+createApp(Counter).mount("#root");
+```
+
+## Why Refract
+
+- **Precise updates.** When state changes, only the components that read it re-render. You don't need `memo`, `useCallback` or manual optimization.
+- **Simple state.** A refraction is one object with `.value` and `.set()`. Create it inside a component for local state, or at module level for shared state. No store library required.
+- **Reusable logic.** Optics package state and side effects into functions you can share, and components that use the same optic share one subscription.
+- **Predictable side effects.** Effects are opt-in, scoped to the component that created them, and cleaned up automatically.
+- **Built for live data and motion.** Stream-based updates turn WebSockets and other streams into state, and a declarative animation API animates values without imperative code.
+- **Small and fast.** A compiler removes unused reactivity at build time.
+- **TypeScript-first.** Written in TypeScript, with types for components, props and state.
+
+## Core concepts
+
+| Concept | What it is |
 | --- | --- |
-| Learn | Introduction, installation, quick start, project structure, TypeScript, six core-concept pages |
-| Guides | Three tutorials (counter, todo list, global theme) and four how-to guides (animations, streams, testing, migrating from React) |
-| API reference | 14 pages, one per export, each with signature, parameters, returns, examples and caveats |
-| Resources | FAQ, troubleshooting, glossary, contributing guide, changelog |
-| Search | Offline full-text search (`@easyops-cn/docusaurus-search-local`), no external service |
-| Chatbot | **Ask Refract**, a docs assistant available on every page (see below) |
+| **Components** | Pure functions, created with `createComponent()`, that return JSX |
+| **Refractions** | Reactive units of state: read `.value`, update with `.set()` |
+| **Lenses** | Each component's scoped toolkit for its own state, effects and lifecycle |
+| **Optics** | Reusable units of logic that combine refractions and effects |
+| **Effects** | `useEffect`, `useOptic` and `useFlash` for work outside rendering |
 
-## Run locally
+## Get started
 
-Requires Node.js 18 or later.
+Create a new app:
+
+```bash
+npm create refract@latest my-app
+cd my-app
+npm install
+npm run dev
+```
+
+Or add Refract to an existing Vite project:
+
+```bash
+npm install refract-js
+npm install --save-dev @refract-js/vite-plugin
+```
+
+Then follow the [Quick start](https://cae-west.github.io/Refract/docs/getting-started/quick-start) to build your first app.
+
+## Documentation
+
+| Start here | |
+| --- | --- |
+| [Introduction](https://cae-west.github.io/Refract/docs) | What Refract is and how the docs are organized |
+| [Quick start](https://cae-west.github.io/Refract/docs/getting-started/quick-start) | Build a small app in about ten minutes |
+| [Core concepts](https://cae-west.github.io/Refract/docs/concepts/components) | The model behind components, refractions, lenses and optics |
+| [Guides](https://cae-west.github.io/Refract/docs/guides) | Tutorials and how-to guides |
+| [API reference](https://cae-west.github.io/Refract/docs/api) | Every export, with signatures and examples |
+| [Migrating from React](https://cae-west.github.io/Refract/docs/guides/migrating-from-react) | How React patterns map to Refract |
+
+Have a question? Use the **Ask Refract** assistant on any docs page to search the documentation in plain language.
+
+## About this repository
+
+This repository contains the Refract documentation site, built with [Docusaurus](https://docusaurus.io) and published to GitHub Pages automatically on every push to `main`.
 
 ```bash
 cd refract-docs
 npm install
-npm start          # dev server at http://localhost:3000
-npm run build      # production build in build/, fails on broken links
-npm run serve      # preview the production build
+npm start
 ```
 
-## The Ask Refract chatbot
+See [`refract-docs/README.md`](refract-docs/README.md) for how the site and its docs assistant are built, and the [contributing guide](https://cae-west.github.io/Refract/docs/resources/contributing) to suggest changes.
 
-The assistant answers questions in plain language using only this documentation, and every answer links to the sections it came from.
+## License
 
-How it works:
-
-1. **Indexing (build time).** `plugins/docs-assistant-index` reads every docs page after Docusaurus loads it, splits it into sections at `##` and `###` headings, and writes a JSON index. New or edited pages are indexed automatically on the next build.
-2. **Retrieval (in the browser).** `src/components/DocsAssistant/engine.ts` ranks sections with BM25, weighting section headings above page titles, prose and code. It splits camelCase identifiers and expands Refract-specific synonyms, so "the equivalent of useMemo" finds `derive()` and "custom hook" finds optics.
-3. **Answering.** The best section's most relevant paragraphs, its first code example and up to three source links are shown. Questions the docs can't answer get a clear "not found" response with starting points, rather than a guess.
-
-The index is loaded lazily the first time someone opens the assistant, so it adds nothing to normal page loads. There is no server and no API key, so the chatbot works on any static host.
-
-### Optional: generate answers with an LLM
-
-Set the `ASSISTANT_ENDPOINT` environment variable at build time to the URL of a serverless function. The assistant then POSTs `{ question, context }`, where `context` is the retrieved doc sections, and displays the function's `{ answer }` with the same source links. If the endpoint fails, the assistant falls back to the local answer. On GitHub Pages, add `ASSISTANT_ENDPOINT` as a repository variable (Settings → Secrets and variables → Actions → Variables).
-
-## Deploy
-
-The site reads `SITE_URL`, `BASE_URL` and `REPO_URL` from the environment, so the same config works on any host.
-
-### GitHub Pages (recommended)
-
-The workflow in `.github/workflows/deploy-docs.yml` builds and publishes the site on every push to `main`.
-
-1. Push this repository to your fork.
-2. In the fork, open **Settings → Pages** and set **Source** to **GitHub Actions**.
-3. Open the **Actions** tab and run **Deploy docs to GitHub Pages** (or push a commit).
-
-The site is published at `https://<your-username>.github.io/Refract/`.
-
-### Netlify
-
-Import the repository, set **Base directory** to `refract-docs`, and deploy. `netlify.toml` supplies the build command and output folder. Set `SITE_URL` to your Netlify URL.
-
-### Vercel
-
-Import the repository and set **Root Directory** to `refract-docs`. `vercel.json` supplies the rest.
-
-## Project layout
-
-```text
-refract-docs/
-├── docs/                         # All documentation pages (Markdown/MDX)
-├── plugins/docs-assistant-index/ # Build-time chatbot index
-├── src/
-│   ├── components/DocsAssistant/ # Chatbot UI and retrieval engine
-│   ├── css/custom.css            # Theme: colors, type, tables, admonitions
-│   ├── pages/index.tsx           # Homepage
-│   └── theme/Footer/             # Mounts the chatbot on every page
-├── static/img/                   # Logo, favicon, icons
-├── docusaurus.config.ts
-└── sidebars.ts                   # Learn, Guides and API reference sidebars
-```
+[Apache License 2.0](LICENSE)
