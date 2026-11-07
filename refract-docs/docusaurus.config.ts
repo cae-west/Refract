@@ -9,7 +9,7 @@ const siteUrl = process.env.SITE_URL ?? 'https://refract-docs.netlify.app';
 const baseUrl = process.env.BASE_URL ?? '/';
 const repoUrl =
   process.env.REPO_URL ??
-  'https://github.com/Technical-writing-mentorship-program/Refract';
+  'https://github.com/cae-west/Refract';
 
 const config: Config = {
   title: 'Refract',

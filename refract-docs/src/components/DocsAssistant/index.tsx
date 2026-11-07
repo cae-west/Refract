@@ -16,6 +16,9 @@ const SUGGESTIONS = [
   'Why didn’t my array update?',
 ];
 
+// How long to wait for the optional LLM endpoint before using the local answer.
+const LLM_TIMEOUT_MS = 15000;
+
 let enginePromise: Promise<AssistantEngine> | null = null;
 function loadEngine(): Promise<AssistantEngine> {
   enginePromise ??= import('@refract/assistant-index').then(
@@ -153,15 +156,20 @@ export default function DocsAssistant() {
       const answer = engine.answer(q);
       let llmText: string | undefined;
       // Optional: if an LLM endpoint is configured, let it write the answer
-      // from the retrieved sections. Falls back to the local answer on error.
+      // from the retrieved sections. Falls back to the local answer on error,
+      // on a malformed response, or if the endpoint takes too long.
       if (endpoint && answer.kind === 'answer') {
         try {
           const res = await fetch(endpoint, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({question: q, context: answer.contextText}),
+            signal: AbortSignal.timeout(LLM_TIMEOUT_MS),
           });
-          if (res.ok) llmText = (await res.json()).answer;
+          if (res.ok) {
+            const data = await res.json();
+            if (typeof data?.answer === 'string' && data.answer.trim()) llmText = data.answer;
+          }
         } catch {
           /* use the local answer */
         }

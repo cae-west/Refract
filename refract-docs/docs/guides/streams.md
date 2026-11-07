@@ -54,6 +54,21 @@ async function* countdown(from) {
 const remaining = fromStream(countdown(10), 10);
 ```
 
+An async generator can only be iterated once. If every reader unmounts, the stream stops and the generator finishes, so a later reader sees the last value and no further updates. To restart from the beginning each time, use a subscribe function that creates a new generator:
+
+```js
+const remaining = fromStream((emit) => {
+  let stopped = false;
+  (async () => {
+    for await (const n of countdown(10)) {
+      if (stopped) break;
+      emit(n);
+    }
+  })();
+  return () => (stopped = true);
+}, 10);
+```
+
 ## Combine streams with derived values
 
 Derived refractions work with stream-backed refractions like any other:
@@ -75,11 +90,13 @@ export const portfolioValue = derive(() =>
 Pass `onError` to handle failures. To reconnect, reopen the socket inside the subscribe function:
 
 ```js
+const FEED_URL = "wss://example.com/feed";
+
 export const feed = fromStream((emit) => {
   let ws;
   let retry;
   const connect = () => {
-    ws = new WebSocket(URL);
+    ws = new WebSocket(FEED_URL);
     ws.onmessage = (e) => emit(JSON.parse(e.data));
     ws.onclose = () => (retry = setTimeout(connect, 2000));
   };

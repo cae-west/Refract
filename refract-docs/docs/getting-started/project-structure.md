@@ -21,7 +21,8 @@ my-app/
 │   ├── pages/              # Route-level components (starter template only)
 │   │   └── Home.jsx
 │   ├── App.jsx             # Root component
-│   └── main.js             # Entry point: creates and mounts the app
+│   ├── main.js             # Entry point: creates and mounts the app
+│   └── styles.css          # Global styles, imported by main.js
 ├── index.html              # HTML shell with the #root mount point
 ├── refract.config.js       # Compiler and dev-tool settings
 ├── vite.config.js          # Bundler config with the Refract plugin

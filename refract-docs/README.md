@@ -15,7 +15,7 @@ The documentation site for **Refract**, a reactive, composable JavaScript framew
 
 ## Run locally
 
-Requires Node.js 18 or later.
+Requires Node.js 20 or later.
 
 ```bash
 cd refract-docs

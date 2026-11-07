@@ -47,8 +47,10 @@ const Drawer = createComponent(({ lens, children }) => {
 Each transition exposes `running`. Watch it with an effect:
 
 ```jsx
+const hidden = lens.useRefraction(true);
+
 lens.useEffect(() => {
-  if (!offset.running.value && !open.value) setHidden(true);
+  if (!offset.running.value && !open.value) hidden.set(true);
 }, [offset.running]);
 ```
 

@@ -35,7 +35,7 @@ In React, hooks rely on call order and a hidden "current component". Refract mak
 | `lens.useRefraction(initial)` | Create local state |
 | `lens.derive(fn)` | Create a local derived refraction |
 | `lens.useEffect(fn, deps)` | Run a side effect after render |
-| `lens.useOptic(fn, deps)` | Run a cached, transition-aware side effect |
+| `lens.useOptic(fn, deps)` | Run a transition-aware side effect (shared when used inside an optic) |
 | `lens.useFlash(fn)` | Run once after the first render, before paint |
 | `lens.onMount(fn)` / `lens.onUnmount(fn)` | Lifecycle callbacks |
 | `lens.context(key)` | Read a value provided by the app or an ancestor |
@@ -89,7 +89,7 @@ export function useCounter(lens, start = 0) {
 }
 ```
 
-Both styles are supported. See [Optics](./optics.md).
+Both styles are supported. One difference matters for shared optics (optics that call `useOptic`): Refract shares them between components that pass the same arguments, and every component's lens is different. An optic that takes the lens as an argument is therefore never shared. Use that when each component needs its own instance. See [Optics](./optics.md#how-sharing-works).
 
 ## Related
 

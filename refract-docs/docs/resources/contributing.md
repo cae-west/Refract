@@ -9,7 +9,7 @@ Thanks for helping improve the Refract documentation. Fixes, clearer explanation
 
 ## Run the docs locally
 
-The site is built with [Docusaurus](https://docusaurus.io). You need Node.js 18 or later.
+The site is built with [Docusaurus](https://docusaurus.io). You need Node.js 20 or later.
 
 ```bash
 git clone https://github.com/<your-username>/Refract.git

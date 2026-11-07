@@ -30,7 +30,7 @@ interface Lens<P> {
 | `useRefraction()` | Create local state | [`useRefraction()`](./use-refraction.md) |
 | `derive()` | Create a local derived value | [`derive()`](./derive.md) |
 | `useEffect()` | Side effect after paint | [`useEffect()`](./use-effect.md) |
-| `useOptic()` | Shared, transition-aware side effect | [`useOptic()`](./use-optic.md) |
+| `useOptic()` | Transition-aware side effect, shared when used inside an optic | [`useOptic()`](./use-optic.md) |
 | `useFlash()` | One-time effect before first paint | [`useFlash()`](./use-flash.md) |
 | `onMount()` | Callback after the component is first added to the DOM | Equivalent to `useEffect(fn, [])` without cleanup |
 | `onUnmount()` | Callback when the component is removed | Runs after effect cleanups |

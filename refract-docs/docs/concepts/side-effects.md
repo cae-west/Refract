@@ -12,7 +12,7 @@ A side effect is anything a component does besides returning JSX: fetching data,
 | Hook | Runs | Use it for |
 | --- | --- | --- |
 | [`useEffect`](../api/use-effect.md) | After render and paint; again when dependencies change | Data fetching, logging, syncing with storage, most effects |
-| [`useOptic`](../api/use-optic.md) | Like `useEffect`, but shared between components with the same dependencies and paused during transitions | Subscriptions and data sources inside reusable optics |
+| [`useOptic`](../api/use-optic.md) | Like `useEffect`, but inside an optic it is shared, with the optic's state, by components that pass the same arguments. Paused during transitions | Subscriptions and data sources inside reusable optics |
 | [`useFlash`](../api/use-flash.md) | Once, after the first render, **before** the browser paints | Measuring layout, setting focus, starting an entrance animation |
 
 ```mermaid

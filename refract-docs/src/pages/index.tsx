@@ -162,21 +162,26 @@ const PATH = [
 
 function InstallCommand() {
   const cmd = 'npm create refract@latest my-app';
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const copy = async () => {
+    try {
+      // navigator.clipboard is undefined outside secure contexts (plain http).
+      if (!navigator.clipboard) throw new Error('Clipboard API unavailable');
+      await navigator.clipboard.writeText(cmd);
+      setStatus('copied');
+    } catch {
+      setStatus('failed');
+    }
+    setTimeout(() => setStatus('idle'), 1600);
+  };
   return (
     <div className={styles.install}>
       <code>
         <span aria-hidden="true" className={styles.dollar}>$ </span>
         {cmd}
       </code>
-      <button
-        type="button"
-        onClick={() => {
-          navigator.clipboard?.writeText(cmd);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1600);
-        }}>
-        {copied ? 'Copied' : 'Copy'}
+      <button type="button" onClick={copy}>
+        {status === 'copied' ? 'Copied' : status === 'failed' ? 'Copy failed' : 'Copy'}
       </button>
     </div>
   );

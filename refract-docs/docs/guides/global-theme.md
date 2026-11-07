@@ -82,14 +82,32 @@ Put `<ThemeToggle />` anywhere. Every component that reads `theme` updates when 
 
 ## 5. Follow system changes
 
-Optionally, follow the system setting when the user hasn't chosen one:
+Optionally, follow the system setting until the user picks a theme themselves. Because `persist` saves every change, including ones made by this listener, you can't tell from `localStorage` alone whether the user chose a theme. Record the user's choice separately instead.
+
+In `src/state/theme.js`, add a flag and a listener:
 
 ```js title="src/state/theme.js"
+const CHOSEN_KEY = "app.theme.chosen";
+
 window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", (e) => {
-    if (!localStorage.getItem("app.theme")) theme.set(e.matches ? "dark" : "light");
+    if (!localStorage.getItem(CHOSEN_KEY)) theme.set(e.matches ? "dark" : "light");
   });
+
+export const markThemeChosen = () => localStorage.setItem(CHOSEN_KEY, "true");
+```
+
+Then call `markThemeChosen()` in the optic's `toggle`, so only an explicit choice stops the theme following the system:
+
+```js title="src/optics/useTheme.js"
+import { theme, markThemeChosen } from "../state/theme";
+
+// inside useTheme()
+toggle: () => {
+  markThemeChosen();
+  theme.set(theme.value === "dark" ? "light" : "dark");
+},
 ```
 
 ## Recap

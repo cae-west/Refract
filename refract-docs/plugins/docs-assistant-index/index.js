@@ -14,27 +14,57 @@ const {createSlugger} = require('@docusaurus/utils');
 
 const ALIAS = '@refract/assistant-index';
 
-/** Remove front matter, MDX imports/JSX wrappers, and admonition fences. */
+/**
+ * Remove front matter, MDX imports/JSX wrappers, and admonition fences.
+ * Lines inside fenced code blocks are left alone, so code examples keep their
+ * `import` lines and JSX.
+ */
 function cleanSource(raw) {
-  return raw
+  const lines = raw
+    .replace(/\r\n?/g, '\n')
     .replace(/^---\n[\s\S]*?\n---\n/, '')
-    .replace(/^import .*$/gm, '')
-    .replace(/^<\/?(Tabs|TabItem|div)[^>]*>\s*$/gm, '')
-    .replace(/^:::(\w+)(\[[^\]]*\])?\s*$/gm, (_, type, label) =>
-      label ? `${label.slice(1, -1)}:` : '',
-    )
-    .replace(/^:::\s*$/gm, '');
+    .split('\n');
+  let inFence = false;
+  const out = [];
+  for (const line of lines) {
+    if (/^\s*```/.test(line)) {
+      inFence = !inFence;
+      out.push(line);
+      continue;
+    }
+    if (inFence) {
+      out.push(line);
+      continue;
+    }
+    if (/^import .*$/.test(line)) continue;
+    if (/^\s*<\/?(Tabs|TabItem|div)[^>]*>\s*$/.test(line)) continue;
+    const admonition = /^:::(\w+)(\[[^\]]*\])?\s*$/.exec(line);
+    if (admonition) {
+      if (admonition[2]) out.push(`${admonition[2].slice(1, -1)}:`);
+      continue;
+    }
+    if (/^:::\s*$/.test(line)) continue;
+    out.push(line);
+  }
+  return out.join('\n');
 }
 
-/** Turn inline Markdown into plain text for searching and display. */
+/**
+ * Turn inline Markdown into plain text for searching and display.
+ * Inline code spans are set aside first so that JSX inside backticks, such as
+ * `<ThemeToggle />`, isn't mistaken for an HTML tag and stripped.
+ */
 function plain(md) {
+  const spans = [];
   return md
+    .replace(/`[^`]+`/g, (span) => `\u0000${spans.push(span) - 1}\u0000`)
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
     .replace(/(^|\W)_([^_]+)_(\W|$)/g, '$1$2$3')
     .replace(/<[^>]+>/g, '')
     .replace(/\\\|/g, '|')
+    .replace(/\u0000(\d+)\u0000/g, (_, i) => spans[Number(i)])
     .trim();
 }
 
@@ -90,7 +120,7 @@ function toSections(doc, raw) {
   };
 
   for (const line of lines) {
-    if (/^```/.test(line)) inFence = !inFence;
+    if (/^\s*```/.test(line)) inFence = !inFence;
     const m = !inFence && /^(#{2,3})\s+(.+?)\s*$/.exec(line);
     if (m) {
       flush();

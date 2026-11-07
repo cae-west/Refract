@@ -48,7 +48,7 @@ const pos = useMousePosition();
 Open Refract DevTools and select the component. The **Dependencies** panel lists every refraction it read during its last render. Common causes:
 
 - Reading a large global refraction when you need one field. Derive the field: `const name = derive(() => user.value.name)`.
-- Creating a new object in `derive()` on every run. Return primitives or use the `equals` option.
+- Creating a new object in `derive()` on every run. `derive()` compares results with `Object.is`, so a new object always counts as a change. Return primitives, or derive each field separately.
 
 ## An effect runs in an infinite loop
 
