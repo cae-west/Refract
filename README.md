@@ -1,10 +1,8 @@
 # Refract
 
-**Change one value. Update only what reads it.**
+Refract is a JavaScript framework for building user interfaces. Components are plain functions that return JSX, and state lives in refractions: small reactive values that keep track of which components read them. When a refraction changes, Refract re-renders those components and leaves the rest of the page alone.
 
-Refract is a reactive JavaScript framework for building user interfaces from pure components and fine-grained state. You describe what the UI should look like for a given state, and Refract updates exactly the parts of the page that depend on the state that changed. Nothing else re-renders.
-
-📖 **Documentation:** [cae-west.github.io/Refract](https://cae-west.github.io/Refract/)
+Documentation: https://cae-west.github.io/Refract/
 
 ```jsx
 import { createApp, createComponent } from "refract";
@@ -22,29 +20,9 @@ const Counter = createComponent(({ lens }) => {
 createApp(Counter).mount("#root");
 ```
 
-## Why Refract
+## Installation
 
-- **Precise updates.** When state changes, only the components that read it re-render. You don't need `memo`, `useCallback` or manual optimization.
-- **Simple state.** A refraction is one object with `.value` and `.set()`. Create it inside a component for local state, or at module level for shared state. No store library required.
-- **Reusable logic.** Optics package state and side effects into functions you can share, and components that use the same optic share one subscription.
-- **Predictable side effects.** Effects are opt-in, scoped to the component that created them, and cleaned up automatically.
-- **Built for live data and motion.** Stream-based updates turn WebSockets and other streams into state, and a declarative animation API animates values without imperative code.
-- **Small and fast.** A compiler removes unused reactivity at build time.
-- **TypeScript-first.** Written in TypeScript, with types for components, props and state.
-
-## Core concepts
-
-| Concept | What it is |
-| --- | --- |
-| **Components** | Pure functions, created with `createComponent()`, that return JSX |
-| **Refractions** | Reactive units of state: read `.value`, update with `.set()` |
-| **Lenses** | Each component's scoped toolkit for its own state, effects and lifecycle |
-| **Optics** | Reusable units of logic that combine refractions and effects |
-| **Effects** | `useEffect`, `useOptic` and `useFlash` for work outside rendering |
-
-## Get started
-
-Create a new app:
+To start a new project:
 
 ```bash
 npm create refract@latest my-app
@@ -53,31 +31,37 @@ npm install
 npm run dev
 ```
 
-Or add Refract to an existing Vite project:
+To add Refract to an existing Vite project:
 
 ```bash
 npm install refract-js
 npm install --save-dev @refract-js/vite-plugin
 ```
 
-Then follow the [Quick start](https://cae-west.github.io/Refract/docs/getting-started/quick-start) to build your first app.
+Then register the plugin in `vite.config.js`. The [installation guide](https://cae-west.github.io/Refract/docs/getting-started/installation) has the details, including how to use Refract from a CDN without a build step.
+
+## The basics
+
+Every component receives a lens, which it uses to create state and effects. Anything created through the lens belongs to that component and is cleaned up when the component unmounts.
+
+A refraction created at the top level of a module is shared by everything that imports it, so you can use one for global state such as the current user or theme.
+
+Reusable logic goes in optics, which are functions named `useSomething` that combine refractions and effects. If several components use the same optic with the same inputs, they share a single subscription.
+
+If you've used React, most of this will look familiar. The [migration guide](https://cae-west.github.io/Refract/docs/guides/migrating-from-react) maps React's hooks to their Refract equivalents.
 
 ## Documentation
 
-| Start here | |
-| --- | --- |
-| [Introduction](https://cae-west.github.io/Refract/docs) | What Refract is and how the docs are organized |
-| [Quick start](https://cae-west.github.io/Refract/docs/getting-started/quick-start) | Build a small app in about ten minutes |
-| [Core concepts](https://cae-west.github.io/Refract/docs/concepts/components) | The model behind components, refractions, lenses and optics |
-| [Guides](https://cae-west.github.io/Refract/docs/guides) | Tutorials and how-to guides |
-| [API reference](https://cae-west.github.io/Refract/docs/api) | Every export, with signatures and examples |
-| [Migrating from React](https://cae-west.github.io/Refract/docs/guides/migrating-from-react) | How React patterns map to Refract |
+- [Quick start](https://cae-west.github.io/Refract/docs/getting-started/quick-start)
+- [Core concepts](https://cae-west.github.io/Refract/docs/concepts/components)
+- [Guides and tutorials](https://cae-west.github.io/Refract/docs/guides)
+- [API reference](https://cae-west.github.io/Refract/docs/api)
 
-Have a question? Use the **Ask Refract** assistant on any docs page to search the documentation in plain language.
+The docs site also has a search box and an assistant that answers questions from the documentation.
 
-## About this repository
+## Working on the docs
 
-This repository contains the Refract documentation site, built with [Docusaurus](https://docusaurus.io) and published to GitHub Pages automatically on every push to `main`.
+The documentation site is in `refract-docs/` and is built with [Docusaurus](https://docusaurus.io). To run it locally:
 
 ```bash
 cd refract-docs
@@ -85,8 +69,8 @@ npm install
 npm start
 ```
 
-See [`refract-docs/README.md`](refract-docs/README.md) for how the site and its docs assistant are built, and the [contributing guide](https://cae-west.github.io/Refract/docs/resources/contributing) to suggest changes.
+Pushing to `main` rebuilds the site and publishes it to GitHub Pages. See the [contributing guide](https://cae-west.github.io/Refract/docs/resources/contributing) before opening a pull request.
 
 ## License
 
-[Apache License 2.0](LICENSE)
+Apache 2.0. See [LICENSE](LICENSE).
