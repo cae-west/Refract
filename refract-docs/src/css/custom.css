@@ -244,3 +244,16 @@ div[class*='codeBlockTitle'] {
 }
 
 :focus-visible { outline: 2px solid var(--ifm-color-primary); outline-offset: 2px; }
+
+/* Keep the back-to-top arrow above the Ask Refract button, which sits in the
+   same bottom-right corner. */
+.theme-back-to-top-button {
+  right: 20px;
+  bottom: 76px;
+}
+@media (max-width: 600px) {
+  .theme-back-to-top-button {
+    right: 14px;
+    bottom: 68px;
+  }
+}
