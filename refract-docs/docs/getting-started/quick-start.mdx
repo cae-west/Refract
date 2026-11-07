@@ -69,7 +69,7 @@ Reading `books.value` inside the component subscribes it. When the value changes
 
 Add a form that appends a title:
 
-```jsx title="src/App.jsx" {5,7-12,17-20}
+```jsx title="src/App.jsx" {5,7-13,18-21}
 import { createComponent } from "refract";
 
 export const App = createComponent(({ lens }) => {
@@ -78,8 +78,9 @@ export const App = createComponent(({ lens }) => {
 
   const addBook = (event) => {
     event.preventDefault();
-    if (!draft.value.trim()) return;
-    books.set([...books.value, draft.value.trim()]);
+    const title = draft.value.trim();
+    if (!title || books.value.includes(title)) return;
+    books.set([...books.value, title]);
     draft.set("");
   };
 

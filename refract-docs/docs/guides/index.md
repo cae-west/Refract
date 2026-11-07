@@ -12,7 +12,7 @@ sidebar_label: Overview
 | --- | --- | --- |
 | [Build a counter app](./counter-app.mdx) | Components, local state, events, derived values | 15 min |
 | [Build a todo list](./todo-list.md) | Data fetching with optics, loading and error states, lists | 30 min |
-| [Add a global theme](./global-theme.md) | Global refractions, context, persistence | 20 min |
+| [Add a global theme](./global-theme.md) | Global refractions, persistence, syncing with the DOM | 20 min |
 
 **How-to guides** solve one problem and assume you know the basics.
 

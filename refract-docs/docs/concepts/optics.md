@@ -43,11 +43,35 @@ Both run side effects after render and accept a cleanup function. `useOptic` add
 | | `useEffect` | `useOptic` |
 | --- | --- | --- |
 | Re-runs when dependencies change | Yes | Yes |
-| **Dependency-aware caching**: shares one running effect between components with identical dependencies | No | Yes |
+| **Sharing**: components that call the same optic with the same arguments share its state and one running effect | No | Yes |
 | **Transition-aware**: defers re-running while a declarative transition is in progress | No | Yes |
 | Typical use | One-off work in one component | Subscriptions and data sources inside optics |
 
-Caching matters for optics like `useMousePosition`: ten components can call it, and Refract attaches a single `mousemove` listener, not ten. The listener is removed when the last component using it unmounts.
+Sharing matters for optics like `useMousePosition`: ten components can call it, and Refract attaches a single `mousemove` listener, not ten. All ten read the same `pos` refraction, so they all update together. The listener is removed when the last component using it unmounts.
+
+## How sharing works
+
+An optic that calls `useOptic` is a **shared optic**. Refract identifies each use of it by the optic and the arguments it was called with:
+
+- Components that call it with equal arguments share one instance: the same refractions, the same return value and one running effect.
+- Different arguments create separate instances. `useFetch("/api/user")` and `useFetch("/api/posts")` don't share anything.
+- An optic that doesn't call `useOptic`, such as `useCounter` in the [counter tutorial](../guides/counter-app.mdx), is never shared. Each component gets its own state.
+
+```jsx
+const Avatar = createComponent(() => {
+  const { data } = useFetch("/api/user");
+  return <img src={data.value?.avatarUrl} alt="" />;
+});
+
+const Greeting = createComponent(() => {
+  const { data } = useFetch("/api/user");
+  return <p>Hello, {data.value?.name}</p>;
+});
+```
+
+`Avatar` and `Greeting` share one request and one `data` refraction. When the response arrives, both update.
+
+Because everything inside a shared optic is shared, keep per-component state out of it. Create that state in the component with `lens.useRefraction()`, as the [todo list tutorial](../guides/todo-list.md) does when it copies fetched data into an editable list. The full rules are in the [`useOptic()` reference](../api/use-optic.md#behavior).
 
 ## Composing optics
 
@@ -94,7 +118,7 @@ export function useFetch(url) {
 }
 ```
 
-Because of dependency-aware caching, two components calling `useFetch("/api/user")` share one request.
+Because `useFetch` is a shared optic, two components calling `useFetch("/api/user")` share one request and see the same `data`, `error` and `loading`.
 
 ## Related
 

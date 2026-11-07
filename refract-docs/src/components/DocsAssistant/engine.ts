@@ -112,6 +112,20 @@ const SYNONYMS: Record<string, string[]> = {
   localstorage: ['persist'],
 };
 
+// Synonym keys and values are stemmed once, the same way query words are, so
+// keys such as "props" or "shared" match the stemmed tokens. A Map (rather than
+// a plain object lookup) means words like "constructor" can't hit
+// Object.prototype.
+const SYNONYM_MAP = new Map<string, string[]>();
+for (const [key, values] of Object.entries(SYNONYMS)) {
+  const k = stem(key);
+  SYNONYM_MAP.set(k, [...new Set([...(SYNONYM_MAP.get(k) ?? []), ...values.map(stem)])]);
+}
+
+function synonymsFor(token: string): string[] {
+  return SYNONYM_MAP.get(token) ?? [];
+}
+
 function stem(w: string): string {
   if (w.length <= 4) return w;
   if (w.endsWith('ies')) return w.slice(0, -3) + 'y';
@@ -183,8 +197,7 @@ export class AssistantEngine {
     const terms = new Map<string, number>();
     for (const t of tokenize(question)) {
       terms.set(t, Math.max(terms.get(t) ?? 0, 1));
-      for (const syn of SYNONYMS[t] ?? []) {
-        const s = stem(syn);
+      for (const s of synonymsFor(t)) {
         if (!terms.has(s)) terms.set(s, 0.45);
       }
     }
@@ -254,7 +267,7 @@ export class AssistantEngine {
     }
 
     const section = best.section;
-    const qTokens = new Set(tokenize(question).flatMap((t) => [t, ...(SYNONYMS[t] ?? []).map(stem)]));
+    const qTokens = new Set(tokenize(question).flatMap((t) => [t, ...synonymsFor(t)]));
 
     // Keep the most relevant paragraphs, in their original order.
     const scored = section.paragraphs.map((p, i) => {

@@ -75,7 +75,7 @@ export const TodoApp = createComponent(({ lens }) => {
 });
 ```
 
-The fetched data seeds a local `todos` refraction that the user can then edit.
+The fetched data seeds a local `todos` refraction that the user can then edit. Keep the copy local: `useFetch` is a [shared optic](../concepts/optics.md#how-sharing-works), so `data` is shared with every component that fetches the same URL, and editing it directly would change their lists too.
 
 ## 3. Add a todo
 

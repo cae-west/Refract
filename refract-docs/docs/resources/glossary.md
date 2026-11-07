@@ -57,6 +57,10 @@ Building complex behavior by combining smaller optics.
 
 A reactive unit of state with `.value`, `.set()` and `.update()`. See [Refractions](../concepts/refractions.md).
 
+### Shared optic
+
+An optic that calls [`useOptic()`](../api/use-optic.md). Components that call it with the same arguments share its state and its effect.
+
 ### Transition
 
 A refraction that animates toward a target value. See [`useTransition()`](../api/use-transition.md).
