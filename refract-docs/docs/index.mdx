@@ -1,13 +1,13 @@
 ---
 slug: /
 title: Introduction
-description: What Refract is, the problems it solves, and how the documentation is organized.
+description: What Refract is, how it compares to React, and how the documentation is organized.
 sidebar_label: Introduction
 ---
 
 # Introduction
 
-Refract is a JavaScript framework for building user interfaces out of small, pure components and reactive state. You describe what the screen should look like for a given state, and Refract updates exactly the parts of the page that depend on the state that changed.
+Refract is a JavaScript framework for building user interfaces. You write components as plain functions that return JSX, and you keep state in refractions. When a refraction changes, Refract re-renders the components that read it and leaves the rest of the page alone.
 
 ```jsx title="Counter.jsx"
 import { createComponent } from "refract";
@@ -23,56 +23,54 @@ export const Counter = createComponent(({ lens }) => {
 });
 ```
 
-That component uses the three ideas you will meet on almost every page of these docs:
+This example uses the three ideas that come up on almost every page of these docs:
 
-- **Components** are pure functions, created with `createComponent()`, that return JSX.
-- **Refractions** are reactive units of state. Reading `count.value` subscribes the component; calling `count.set()` updates it.
-- **Lenses** are the scoped toolkit each component receives. `lens.useRefraction()` creates state that belongs to this component and is cleaned up with it.
+- A component is a function wrapped in `createComponent()`. It returns JSX and shouldn't have side effects of its own.
+- A refraction holds a piece of state. Reading `count.value` during render subscribes the component to it, and calling `count.set()` changes it.
+- A lens is the object each component receives. State created with `lens.useRefraction()` belongs to that component and is removed when the component unmounts.
 
-## Why Refract
+## What's included
 
-Front-end frameworks tend to make you choose between a simple mental model and fine-grained performance. Refract aims for both:
+Besides components and refractions, Refract provides:
 
-| You want to… | Refract gives you… |
-| --- | --- |
-| Reason about UI as a function of state | Pure components with no hidden instance state |
-| Update only what changed | Refractions that track exactly which components read them |
-| Reuse logic between components | Optics: composable functions with dependency-aware caching |
-| Keep side effects predictable | Opt-in, scoped effect hooks (`useEffect`, `useOptic`, `useFlash`) that are cleaned up automatically |
-| Animate without imperative code | A declarative transition API built on refractions |
-| Work with live data | Stream-based updates through `fromStream()` |
-| Ship less JavaScript | A compiler that removes unused reactivity at build time |
+- Optics, which are functions for sharing logic between components. Components that use the same optic with the same inputs share one subscription.
+- Three effect hooks: `useEffect`, `useOptic` and `useFlash`. Each runs at a different point after rendering, and all of them are cleaned up when the component unmounts.
+- `useTransition()` for animating values when state changes.
+- `fromStream()` for turning WebSockets, server-sent events and other streams into state.
+- A compiler, run through the Vite plugin, that removes reactivity your app doesn't use.
 
-## How Refract compares
+## Coming from React
 
-If you know React, most of Refract will feel familiar: components, JSX and hooks-style functions all carry over. The differences are in how state flows.
+Components, JSX and hook-style functions work much the same way in Refract. The main difference is how updates happen.
 
-- **No re-render of the whole component tree.** When a refraction changes, Refract re-runs only the components that read it. You do not need `memo`, `useCallback` or dependency gymnastics to avoid wasted renders.
-- **State is an object, not a tuple.** `useRefraction()` returns one object with `.value` and `.set()`, so you can pass state around without losing the setter.
-- **State can live anywhere.** Create a refraction at module level and it becomes shared global state. Create it through a lens and it is local to a component.
+In React, a state change re-renders the component and its children unless you prevent it with `memo` or `useCallback`. In Refract, only the components that read the changed refraction re-render, so you don't need those tools.
 
-If you know Solid.js signals or Svelte stores, refractions will feel similar. See [Migrating from React](./guides/migrating-from-react.md) for a side-by-side mapping.
+`useRefraction()` returns a single object with `.value` and `.set()` instead of a `[value, setter]` pair. You can pass that object to other components and they can both read and update it.
+
+A refraction can be local or shared. One created through a lens belongs to that component. One created at the top level of a module is shared by everything that imports it.
+
+If you've used Solid.js signals or Svelte stores, refractions work in a similar way. [Migrating from React](./guides/migrating-from-react.md) lists React features next to their Refract equivalents.
 
 ## How these docs are organized
 
 <div className="doc-map">
 
-- **[Getting started](./getting-started/installation.mdx)** installs Refract and walks you through your first app.
-- **[Core concepts](./concepts/components.md)** explains the model: components, refractions, lenses, optics and side effects. Read these in order the first time.
-- **[Guides](./guides/index.md)** are task-focused. Tutorials build a complete app step by step; how-to guides solve one specific problem.
-- **[API reference](./api/index.md)** lists every export, its parameters and its return value.
-- **[Resources](./resources/faq.md)** collects the FAQ, troubleshooting tips, a glossary and the contribution guide.
+- [Getting started](./getting-started/installation.mdx) covers installation and your first app.
+- [Core concepts](./concepts/components.md) explains components, refractions, lenses, optics and side effects. If you're new to Refract, read these in order.
+- [Guides](./guides/index.md) has tutorials, which build a complete app step by step, and how-to guides, which each solve one problem.
+- [API reference](./api/index.md) lists every export with its parameters, return value and examples.
+- [Resources](./resources/faq.md) has the FAQ, troubleshooting, a glossary and the contributing guide.
 
 </div>
 
-:::tip[Ask the docs]
-Use the **Ask Refract** button in the bottom-right corner to ask a question in plain language. The assistant answers from these docs and links to the pages it used.
+:::tip
+You can also ask questions with the **Ask Refract** button in the bottom-right corner. It searches these docs and links to the pages its answers come from.
 :::
 
 ## Prerequisites
 
-You should be comfortable with modern JavaScript (modules, arrow functions, destructuring and promises) and have a basic understanding of HTML and the DOM. Familiarity with JSX helps but is not required.
+You should know modern JavaScript, including modules, arrow functions, destructuring and promises, and have a basic understanding of HTML and the DOM. Knowing JSX helps but isn't required.
 
 ## Next steps
 
-Start with [Installation](./getting-started/installation.mdx), or jump straight to the [Quick start](./getting-started/quick-start.mdx) if you already have Node.js set up.
+Start with [Installation](./getting-started/installation.mdx). If you already have Node.js set up, you can go straight to the [Quick start](./getting-started/quick-start.mdx).
