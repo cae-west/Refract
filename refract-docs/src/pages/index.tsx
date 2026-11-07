@@ -50,7 +50,7 @@ const CONCEPTS: {id: string; name: string; summary: string; link: string; code: 
   {
     id: 'refractions',
     name: 'Refractions',
-    summary: 'Reactive units of state. Read .value to subscribe, call .set() to update.',
+    summary: 'Reactive state. Read it with .value and change it with .set().',
     link: '/docs/concepts/refractions',
     code: `import { useRefraction, derive } from "refract";
 
@@ -63,7 +63,7 @@ count.value; // 1`,
   {
     id: 'lenses',
     name: 'Lenses',
-    summary: 'Each component’s own scope for state, effects and lifecycle, cleaned up with it.',
+    summary: 'The object a component uses to create its state and effects.',
     link: '/docs/concepts/lenses',
     code: `const TodoList = createComponent(({ lens }) => {
   const todos = lens.useRefraction([]);
@@ -78,7 +78,7 @@ count.value; // 1`,
   {
     id: 'optics',
     name: 'Optics',
-    summary: 'Reusable logic. Components calling the same optic share one subscription.',
+    summary: 'Functions that package state and effects so components can share them.',
     link: '/docs/concepts/optics',
     code: `export function useMousePosition() {
   const pos = useRefraction({ x: 0, y: 0 });
@@ -95,7 +95,7 @@ count.value; // 1`,
   {
     id: 'effects',
     name: 'Effects',
-    summary: 'Opt-in and scoped: useEffect, useOptic inside optics, useFlash for the first frame.',
+    summary: 'Code that runs after rendering, such as fetching data or starting a timer.',
     link: '/docs/concepts/side-effects',
     code: `lens.useFlash(() => input.value.focus()); // once, before paint
 
@@ -118,8 +118,8 @@ function ConceptTabs() {
   return (
     <section className={styles.concepts} aria-labelledby="concepts-title">
       <div className={styles.conceptsIntro}>
-        <h2 id="concepts-title">Four ideas cover most of Refract</h2>
-        <p>Learn them once and every page of the API reference will look familiar.</p>
+        <h2 id="concepts-title">Core concepts</h2>
+        <p>Most of the API builds on these four ideas.</p>
       </div>
       <div className={styles.conceptsBody}>
         <div role="tablist" aria-label="Core concepts" aria-orientation="vertical" className={styles.tablist}>
@@ -154,10 +154,10 @@ function ConceptTabs() {
 }
 
 const PATH = [
-  {title: 'Install Refract', text: 'Create an app with one command, or add Refract to a Vite project.', to: '/docs/getting-started/installation'},
-  {title: 'Build something small', text: 'The quick start covers state, props, derived values and effects in ten minutes.', to: '/docs/getting-started/quick-start'},
-  {title: 'Learn the model', text: 'Core concepts explain why updates are precise and who owns what.', to: '/docs/concepts/components'},
-  {title: 'Look things up', text: 'The API reference documents every export with signatures and examples.', to: '/docs/api'},
+  {title: 'Install Refract', text: 'Create a new app, or add Refract to an existing Vite project.', to: '/docs/getting-started/installation'},
+  {title: 'Follow the quick start', text: 'Build a small app and learn about state, props and effects. It takes about ten minutes.', to: '/docs/getting-started/quick-start'},
+  {title: 'Read the core concepts', text: 'How components, refractions, lenses and optics work together.', to: '/docs/concepts/components'},
+  {title: 'Use the API reference', text: 'Every export, with its parameters, return value and examples.', to: '/docs/api'},
 ];
 
 function InstallCommand() {
@@ -186,25 +186,22 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title="Documentation"
-      description="Documentation for Refract, a reactive, composable JavaScript framework built on refractions, lenses and optics.">
+      description="Documentation for Refract, a JavaScript framework for building user interfaces.">
       <main className={styles.home}>
         <header className={styles.hero}>
           <div className={styles.heroText}>
-            <h1>
-              Change one value.
-              <br />
-              Update only what reads it.
-            </h1>
+            <h1>Refract documentation</h1>
             <p className={styles.lede}>
-              Refract is a reactive JavaScript framework for building user interfaces from pure
-              components and refractions, its precise unit of state.
+              Refract is a JavaScript framework for building user interfaces. Components are plain
+              functions, and state lives in refractions. When a refraction changes, Refract re-renders
+              the components that use it and nothing else.
             </p>
             <div className={styles.actions}>
               <Link className="button button--primary button--lg" to="/docs/getting-started/quick-start">
-                Start the quick start
+                Quick start
               </Link>
               <Link className={styles.secondary} to="/docs">
-                What is Refract?
+                Read the introduction
               </Link>
             </div>
             <InstallCommand />
@@ -215,7 +212,7 @@ export default function Home(): ReactNode {
         <ConceptTabs />
 
         <section className={styles.path} aria-labelledby="path-title">
-          <h2 id="path-title">New to Refract? Follow this path</h2>
+          <h2 id="path-title">Where to start</h2>
           <ol>
             {PATH.map((step) => (
               <li key={step.title}>
@@ -230,10 +227,10 @@ export default function Home(): ReactNode {
 
         <section className={styles.ask}>
           <div>
-            <h2>Have a question? Ask the docs.</h2>
+            <h2>Ask a question</h2>
             <p>
-              The Refract assistant searches these pages for you. Ask in plain language and get the
-              relevant section, a code example and links to its sources.
+              The docs assistant searches these pages and answers with the matching section, an
+              example, and links to where it found them.
             </p>
           </div>
           <button
