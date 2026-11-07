@@ -15,6 +15,10 @@ fromStream<T>(
 ): ReadonlyRefraction<T>
 ```
 
+## When to use it
+
+Use `fromStream()` for data that arrives over time from outside your app: WebSocket messages, server-sent events, an async iterator. Without it, every component that needs live data repeats the same pattern: subscribe in an effect, copy each message into a refraction, and unsubscribe on unmount. `fromStream()` does this once. The stream starts when something first reads the refraction and stops when nothing does.
+
 ## Parameters
 
 | Name | Type | Description |

@@ -13,6 +13,12 @@ useRefraction<T>(initial: T, options?: RefractionOptions<T>): Refraction<T>
 
 Called at module level, it creates **global** state. Inside a component, use `lens.useRefraction()` to create **local** state that is disposed with the component. See [Local and global refractions](../concepts/refractions.md#local-and-global-refractions).
 
+## When to use it
+
+Use a refraction for any value that changes and should update the page: form input, toggles, a selected item, fetched data, the current user. Call `lens.useRefraction()` for state that belongs to one component, and the top-level `useRefraction()` for state shared across the app.
+
+If a value can be calculated from other refractions, use [`derive()`](./derive.md) instead. If it never changes, use a plain constant.
+
 ## Parameters
 
 | Name | Type | Description |

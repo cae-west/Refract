@@ -11,6 +11,12 @@ Runs a function and defers all resulting updates until it returns, so subscriber
 batch<T>(fn: () => T): T
 ```
 
+## When to use it
+
+Each update outside an event handler starts its own update cycle. When an async callback sets three refractions, components that read all three render three times, and in between they briefly show a mix of old and new values. Wrap the updates in `batch()` so they apply together and components render once.
+
+You don't need `batch()` inside event handlers, because Refract batches those automatically.
+
 ## Parameters
 
 | Name | Type | Description |

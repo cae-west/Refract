@@ -22,6 +22,10 @@ interface Lens<P> {
 }
 ```
 
+## When to use it
+
+You use the lens in every component that has its own state or effects. It solves the problem of ownership: anything created through `lens` belongs to that component and is cleaned up automatically when it unmounts, so state and listeners never outlive the component. See [Why lenses exist](../concepts/lenses.md#why-lenses-exist).
+
 ## Members
 
 | Member | Description | Details |

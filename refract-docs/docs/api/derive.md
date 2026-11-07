@@ -13,6 +13,10 @@ derive<T>(compute: () => T): ReadonlyRefraction<T>
 
 Inside components, use `lens.derive()` so the derived value is disposed with the component.
 
+## When to use it
+
+Use `derive()` for values calculated from other state: a cart total, a filtered list, a formatted date. Storing those in their own refraction means updating two values every time one changes, and sooner or later they drift apart. A derived refraction recalculates itself when its inputs change, and caches the result, so expensive calculations don't run on every render.
+
 ## Parameters
 
 | Name | Type | Description |

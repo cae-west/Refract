@@ -33,6 +33,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'resources/faq',
         'resources/troubleshooting',
+        'resources/get-help',
         'resources/glossary',
         'resources/contributing',
         'resources/changelog',

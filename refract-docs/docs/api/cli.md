@@ -5,6 +5,10 @@ description: Commands provided by create-refract and the refract command.
 
 # CLI
 
+## When to use it
+
+Use `create-refract` to start a new project. It sets up the compiler, a development server and optionally TypeScript, so you don't have to configure a bundler yourself. Inside the project, the `refract` command runs everyday tasks: the development server, production builds and tests.
+
 ## `create-refract`
 
 Scaffolds a new project.

@@ -14,6 +14,10 @@ createComponent<P = {}>(
 ): Component<P>
 ```
 
+## When to use it
+
+Use `createComponent()` for every component. Wrapping the render function is what lets Refract give the component a [lens](./lens.md), track which refractions it reads, and re-render it only when they change. It also gives you error boundaries (`fallback`) and readable names in DevTools and error messages.
+
 ## Parameters
 
 | Name | Type | Description |

@@ -30,6 +30,12 @@ const Cursor = createComponent(() => {
 });
 ```
 
+## Why optics exist
+
+Many components need the same logic: fetching data, tracking the window size, following online status. Copying that logic into each component duplicates code, and it also duplicates the work: ten components tracking the mouse attach ten listeners. Moving it into a plain module function loses the component lifecycle, so nothing cleans up when components unmount.
+
+An optic packages the state, the effects and the cleanup into one function that any component can call. Optics that call [`useOptic()`](../api/use-optic.md) go further and share one instance between components, so the work isn't duplicated either.
+
 ## Rules for optics
 
 1. **Name it `useSomething`.** The prefix signals that it must run during a component's render. The compiler warns when it sees a `use` function called from an event handler or a loop.

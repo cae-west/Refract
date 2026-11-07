@@ -19,6 +19,7 @@ import { createApp, createComponent, useRefraction, derive } from "refract";
 | [`createApp()`](./create-app.md) | Create an application from a root component and mount it |
 | [`createComponent()`](./create-component.md) | Define a component from a render function |
 | [Lens](./lens.md) | The scoped toolkit passed to every component |
+| [`renderToString()`](../concepts/reactivity-model.md#rendering-on-the-server) | Render an app to HTML on the server (from `"refract/server"`) |
 
 ## State
 
@@ -47,4 +48,4 @@ import { createApp, createComponent, useRefraction, derive } from "refract";
 
 ## Reading these pages
 
-Each reference page follows the same layout: a **signature**, **parameters**, the **return value**, at least one **example**, and **caveats**. Optional parameters are marked with `?`.
+Each reference page follows the same layout: a **signature**, **when to use it**, **parameters**, the **return value**, at least one **example**, and **caveats**. Optional parameters are marked with `?`.
