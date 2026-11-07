@@ -11,6 +11,10 @@ Creates an application instance from a root component. Mount it to render your a
 createApp(root: Component, options?: AppOptions): RefractApp
 ```
 
+## When to use it
+
+Every Refract app starts with `createApp()`, usually once in your entry file. It is also where app-wide concerns belong: reporting errors, providing values that every component needs (such as an API URL), and installing plugins such as the router. Setting these up once on the app means components don't each configure them.
+
 ## Parameters
 
 | Name | Type | Description |
@@ -33,6 +37,7 @@ A `RefractApp` with these methods. All methods except `unmount()` return the app
 | Method | Description |
 | --- | --- |
 | `mount(target)` | Render into `target`, a CSS selector or an `Element`. Throws if the target doesn't exist |
+| `hydrate(target)` | Like `mount()`, but takes over HTML that was [rendered on the server](../concepts/reactivity-model.md#rendering-on-the-server) instead of replacing it |
 | `unmount()` | Remove the app and run every cleanup |
 | `provide(key, value)` | Make a value available to every component through `lens.context(key)` |
 | `use(plugin, options?)` | Install a plugin such as `@refract-js/router` |
@@ -63,5 +68,5 @@ createApp(App, {
 
 ## Caveats
 
-- Call `mount()` once per app. To render in two places, create two apps.
+- Call `mount()` or `hydrate()` once per app. To render in two places, create two apps.
 - `provide()` values set on the app are overridden by `lens.provide()` calls with the same key lower in the tree.

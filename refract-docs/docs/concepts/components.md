@@ -21,6 +21,12 @@ Use it like an HTML element:
 <Greeting name="Ada" />
 ```
 
+## Why components exist
+
+Most interfaces repeat themselves: the same button, card or form field appears in many places. Without components, you copy the markup and its behavior to each place, and every fix has to be made in all of them. A component packages a piece of UI with its state and behavior so you write it once and reuse it.
+
+Refract's components are pure functions, which solves a second problem: knowing what to re-render. A component's output depends only on its props and the refractions it reads, so when data changes, Refract re-renders exactly the components that use it. Pure components are also easy to test, because the same inputs always produce the same output.
+
 ## What a component receives
 
 The render function is called with a single object:

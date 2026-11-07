@@ -19,6 +19,12 @@ theme.value;        // "dark"
 
 The name comes from optics: one beam of state passes through your app and is *refracted* into every place that depends on it.
 
+## Why refractions exist
+
+The hardest part of most interfaces is keeping the screen in sync with the data. With a plain variable, changing the value doesn't change the page: you have to find every element that shows it and update each one, and it's easy to miss one. React's `useState` keeps the page in sync, but re-renders the component and its children whether or not they use the value.
+
+A refraction records who reads it. When it changes, Refract updates exactly those readers and nothing else, so the page stays correct without manual updates or memoization.
+
 ## Reading a refraction
 
 Read the current value with `.value`. Inside a component, derived refraction or effect, reading `.value` also **subscribes** to the refraction, so Refract knows to update that code when the value changes.

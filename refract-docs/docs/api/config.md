@@ -24,6 +24,10 @@ export default defineConfig({
 
 All options are optional.
 
+## When to use it
+
+Most projects never need a config file: the defaults suit development and production. Add one when a default doesn't fit, for example to turn off compiler optimizations while debugging, accept only `className` for CSS classes, turn off DevTools, or expose environment variables to your app.
+
 ## `compiler`
 
 | Option | Type | Default | Description |
