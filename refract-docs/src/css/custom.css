@@ -102,6 +102,17 @@ h1 { font-weight: 750; letter-spacing: -0.025em; }
   backdrop-filter: saturate(160%) blur(10px);
   border-bottom: 1px solid var(--rf-line);
 }
+/* backdrop-filter makes the navbar the containing block for its fixed-position
+   children, which would squeeze the mobile menu to the navbar's height.
+   Turn the blur off while the menu is open so it can fill the screen. */
+.navbar.navbar-sidebar--show {
+  backdrop-filter: none;
+}
+/* The navbar color is translucent for the blur effect. Give the mobile menu a
+   solid background so the page doesn't show through it. */
+.navbar-sidebar {
+  background-color: var(--rf-glass);
+}
 .navbar__title {
   font-family: var(--ifm-heading-font-family);
   font-weight: 750;
