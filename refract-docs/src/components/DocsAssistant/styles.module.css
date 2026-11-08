@@ -28,6 +28,9 @@
 .launcher:hover { transform: translateY(-1px); }
 .launcher:focus-visible { outline: 3px solid var(--ifm-color-primary-lighter); outline-offset: 3px; }
 .launcher[aria-expanded='true'] { display: none; }
+/* Hide the launcher while the mobile navigation menu is open, so it doesn't
+   sit on top of the menu. */
+:global(html:has(.navbar-sidebar--show)) .launcher { display: none; }
 
 .panel {
   position: fixed;
