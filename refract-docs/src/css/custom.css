@@ -112,6 +112,13 @@ h1 { font-weight: 750; letter-spacing: -0.025em; }
    solid background so the page doesn't show through it. */
 .navbar-sidebar {
   background-color: var(--rf-glass);
+  /* Keep the open menu above the navbar search box, whose icon has
+     z-index: 1. Without this, between roughly 600px and 996px wide the
+     search box shows through the menu and sits under its close button. */
+  z-index: 3;
+}
+.navbar-sidebar__backdrop {
+  z-index: 2;
 }
 .navbar__title {
   font-family: var(--ifm-heading-font-family);
