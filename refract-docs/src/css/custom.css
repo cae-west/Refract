@@ -120,6 +120,15 @@ h1 { font-weight: 750; letter-spacing: -0.025em; }
 .navbar-sidebar__backdrop {
   z-index: 2;
 }
+/* Below 997px Infima shrinks the search box to 9rem, which is too narrow for
+   both the "Search" placeholder and the "ctrl K" hint, so they overlap. The
+   navbar links move into the menu at these widths, so keep the desktop width.
+   (Below 577px the search plugin collapses the box to an icon instead.) */
+@media (min-width: 577px) and (max-width: 996px) {
+  .navbar__search-input {
+    width: 12.5rem;
+  }
+}
 .navbar__title {
   font-family: var(--ifm-heading-font-family);
   font-weight: 750;
